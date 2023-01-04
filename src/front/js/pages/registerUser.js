@@ -1,16 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const RegisterUser = () => {
   const [dataUser, SetDataUser] = useState({});
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch(process.env.BACKEND_URL + "/api/user")
+      .then((response) => response.json())
+      .then((response) => {
+        setUsers(response);
+      });
+  }, []);
 
   const handleChange = (event) => {
-    console.log(event.target.value);
     SetDataUser({ ...dataUser, [event.target.email]: event.target.value });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    fetch(process.env.BACKEND_URL + "/api/user", {
+      methods: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(dataUser),
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response);
+      });
   };
 
   return (
     <div className="container col-8">
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="InputEmail" className="form-label">
             Email address
@@ -32,6 +55,8 @@ const RegisterUser = () => {
             type="password"
             className="form-control"
             id="exampleInputPassword1"
+            name="password"
+            onChange={handleChange}
           />
         </div>
         <div className="mb-3 form-check">
