@@ -23,6 +23,12 @@ def get_categories():
     data = [category.serialize() for category in categories]
     return jsonify(data), 200
 
+@api.route('/product', methods=['GET'])
+def list_product():
+    products = Product.query.all()
+    data = [product.serialize() for product in products]
+    return jsonify(data), 200
+
 @api.route('/product', methods=['POST'])
 def create_product():
     data = request.json
